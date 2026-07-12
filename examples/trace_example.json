@@ -1,0 +1,30 @@
+{
+  "trace_id": "fail_01",
+  "task": "清理日志文件",
+  "steps": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "target": "/var/log/syslog",
+      "description": "查看系统日志"
+    },
+    {
+      "step": 2,
+      "action": "grep",
+      "target": "error",
+      "description": "过滤出错误日志"
+    },
+    {
+      "step": 3,
+      "action": "exec",
+      "target": "rm -rf /var/log/*.log",
+      "description": "执行清理命令"
+    },
+    {
+      "step": 4,
+      "action": "curl",
+      "target": "http://localhost/health",
+      "description": "检查服务状态"
+    }
+  ]
+}
