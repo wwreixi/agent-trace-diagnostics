@@ -1,0 +1,16 @@
+{
+  "_schema_version": "1.0",
+  "_description": "认知导航诊断API的匿名化Trace输入示例。企业用户可按此格式提供Agent运行数据，无需暴露敏感信息。",
+  "trace_id": "anon-session-001",
+  "step": 3,
+  "action": "web_search",
+  "target": "EU AI Act Article 5",
+  "task": "搜集目标公司所在国的最新AI安全法规",
+  "context": {
+    "previous_actions": [
+      "read_document",
+      "web_search"
+    ],
+    "health_score": 0.72
+  }
+}
