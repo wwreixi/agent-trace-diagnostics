@@ -12,6 +12,35 @@
 
 ---
 
+## 🏗️ 架构总览
+
+认知导航以轻量级 Hook 形式嵌入 Agent 执行循环，在三个关键节点进行实时诊断：
+
+```mermaid
+flowchart TD
+    A[Agent 接收任务] --> B{决策前诊断}
+    B -->|S值健康| C[执行动作]
+    B -->|S值异常| D[导航指令干预]
+    D -->|NARROW_SCOPE| C
+    D -->|HALT| E[暂停并请求人工介入]
+    C --> F{执行后诊断}
+    F -->|T消耗合理| G[验证结果]
+    F -->|T消耗异常| H[记录操作代价]
+    G --> I{验证后诊断}
+    I -->|S值改善| J[继续下一轮]
+    I -->|S值下降| K[触发 RESET_CONTEXT]
+    K --> L[V4.0 上下文裁剪]
+    L --> J
+    J --> A
+```
+
+> **Hook 注入点说明**：
+> - **① 决策前**：当前S值是否健康？决定是否允许执行。
+> - **② 执行后**：T消耗是否合理？记录操作代价。
+> - **③ 验证后**：S值是否改善？判断操作是否有效。
+
+---
+
 ## 🎯 核心能力
 
 | 能力 | 说明 |
@@ -51,7 +80,7 @@ cd agent-trace-diagnostics
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scriptsctivate
 pip install -r requirements.txt
 ```
 
@@ -71,9 +100,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ### 5. 调用 API
 
 ```bash
-curl -X POST "http://localhost:8000/diagnosis" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "2026年AI安全法规有哪些最新进展？", "session_id": "test_001"}'
+curl -X POST "http://localhost:8000/diagnosis"   -H "Content-Type: application/json"   -d '{"query": "2026年AI安全法规有哪些最新进展？", "session_id": "test_001"}'
 ```
 
 ### 6. 查看 Swagger 文档
